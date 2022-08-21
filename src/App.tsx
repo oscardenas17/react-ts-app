@@ -1,24 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+import "./App.css";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
+
+import { Task } from "./interfaces/Task";
+
+interface Props {
+  title?: string;
+}
+
+function App({ title }: Props) {
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: 1,
+      title: "Learn React",
+      description: "Learn React With TS",
+      completed: false,
+    },
+  ]);
+
+  const getCurrentTime=():number=> new Date().getTime();
+  
+
+  const newAddTask = (task: Task) => {  setTasks([...tasks, {...task, id:getCurrentTime(), completed: false}   ]);}
+
+  const deleteTask = (id: number) => setTasks( tasks.filter(task => task.id !== id))
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ height: "100vh" }}>
+      <nav className="navbar navbar-dark bg-primary ">
+        <div className="container">
+          {title && <h1>{title}</h1>}
+          <a href="/">
+            <img
+              src="https://avatars.githubusercontent.com/u/53705171?v=4"
+              alt="logo"
+              style={{ width: "4rem" }}
+            />
+          </a>
+        </div>
+      </nav>
+
+      <main className="container p-4">
+        <div className="row">
+          <div className="col-md-4"><TaskForm newAddTask={newAddTask}/></div>
+          <div className="col-md-8">
+            <div className="row">
+              <TaskList tasks={tasks} deleteTask={deleteTask} ></TaskList>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
